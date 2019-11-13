@@ -1,55 +1,113 @@
 'use strict';
 
-/*
-  2) В файле скрипта создать 2 переменные (money и time), которые будут получать данные от пользователя:
+let money, time;
 
-·      Первая будет спрашивать "Ваш бюджет на месяц?"
+function start() {
+  money = +prompt("Ваш бюджет на месяц?", "");
+   time = prompt("Введите дату в формате YYYY-MM-DD", "");
 
-·      Вторая "Введите дату в формате YYYY-MM-DD"
+  while (isNaN(money) || money === '' || money === null) {
+    money = +prompt("Ваш бюджет на месяц?", "");
+  }
+}
+start();
 
-3) Создать объект appData, который будет содержать такие данные:
 
-·      бюджет (передаем сюда переменную из п.2)
+let appData = {
+  budget: money,
+  timeData: time,
+  expenses: {},
+  optionalExpenses: {},
+  income: [],
+  savings: true,
+};
 
-·      данные времени - timeData (передаем сюда переменную из п.2)
 
-·      объект с обязательными расходами - expenses (смотри пункт 4)
-
-·      объект с необязательными расходами - optionalExpenses (оставляем пока пустым)
-
-·      массив данных с доп. доходом - income (оставляем пока пустым)
-
-·      свойство savings (выставляем его как false)
-
-4) Задать пользователю по 2 раза вопросы:
-
-    “Введите обязательную статью расходов в этом месяце”
-
-    “Во сколько обойдется?”
-
-    Записать ответы в объект expenses в формате: 
-
-    expenses: {
-    “ответ на первый вопрос” : “ответ на второй вопрос”
+function choosExpenses() {
+  for (let i = 0; i < 2; i++) {
+    let mandatoryExpenseItem = prompt("Введите обязательную статью расходов в этом месяце", ""),
+      howMuch = prompt("Во сколько обойдется?", "");
+    // проверка на отмнену
+    // проверка на пустую строку
+    // ограниечение до 50 символов
+    if (mandatoryExpenseItem != null &&
+      mandatoryExpenseItem != '' &&
+      mandatoryExpenseItem.length <= 50 &&
+      howMuch != null &&
+      howMuch != '' &&
+      howMuch.length <= 50) {
+      appData.expenses[mandatoryExpenseItem] = howMuch;
+    } else {
+      i--;
     }
-*/ 
-
-let money    = +prompt("Ваш бюджет на месяц?", ""),
-     time    = prompt("Введите дату в формате YYYY-MM-DD", ""),
-     mandatoryExpenseItem = prompt("Введите обязательную статью расходов в этом месяце", ""),
-     howMuch = prompt("Во сколько обойдется?", ""),
-     appData = {
-        budget: money,
-        timeData: time,
-        expenses: {},
-        optionalExpenses: {},
-        income: [],
-        savings: false,
-    };
-
-appData.mandatoryExpenseItem1 = howMuch1;
-appData.mandatoryExpenseItem2 = howMuch2;
+  }
+}
+choosExpenses();
 
 
-console.log(appData);
-alert(appData.budget / 30);
+// вариант с while
+// let i = 0;
+// while(i < 2) {
+//   let mandatoryExpenseItem = prompt("Введите обязательную статью расходов в этом месяце", ""),
+//                    howMuch = prompt("Во сколько обойдется?", "");
+// // проверка на отмнену
+// // проверка на пустую строку
+// // ограниечение до 50 символов
+//   if (mandatoryExpenseItem != null &&
+//       mandatoryExpenseItem != '' &&
+//       mandatoryExpenseItem.length < 50 &&
+//       howMuch != null &&
+//       howMuch != '' &&
+//       howMuch.length < 50 ) {
+//     appData.expenses[mandatoryExpenseItem] = howMuch;
+//   } else {
+//     alert( 'Вы не ввели данные! Попробуйте ещё раз!' );
+//     }
+//     i++;
+// }
+
+
+// расчёт дневного бюджета
+function detectDayBadget() {
+  appData.moneyPerDay = appData.budget / 30;
+  alert(`Ежедневный бюждет ${appData.moneyPerDay}`);
+}
+detectDayBadget();
+
+
+// расчёт уровня достатка
+function detectLvel() {
+  if (appData.moneyPerDay < 100) {
+    console.log('Минимальный уровень достатка');
+  } else if (appData.moneyPerDay > 100 && appData.moneyPerDay < 2000) {
+    console.log('Средний уровень достатка');
+  } else if (appData.moneyPerDay > 2000) {
+    console.log('Высокий уровень достатка');
+  } else {
+    console.log('Что то пошло не так!');
+  }
+}
+detectLvel();
+
+
+function checkSavings() {
+  if (appData.savings === true) {
+    let saving = +prompt('Какова сумма накоплений?', ''),
+      persent = +prompt('Под какой годовой процент?', '');
+
+    appData.monthIncome = saving / 100 / 12 * persent;
+    alert(`Доход с Вашего депозита в месяц ${appData.monthIncome}`);
+  }
+}
+checkSavings();
+
+
+// функция для определения не обязательных расходов
+function choosOptExpenses() {
+  for (let i = 0; i <= 3; i++) {
+    let questionOptExpenses = prompt('Статья не обязательных расходов?', '');
+    appData.optionalExpenses[i] = questionOptExpenses;
+  }
+  console.log(appData.optionalExpenses);
+}
+choosOptExpenses();
